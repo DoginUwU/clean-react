@@ -36,6 +36,26 @@ const makeSut = (): SutTypes => {
   };
 };
 
+const simulateValidSubmit = (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): void => { 
+  const emailInput = sut.getByTestId('email');
+  fireEvent.input(emailInput, {
+    target: {
+      value: email
+    }
+  });
+
+  const passwordInput = sut.getByTestId('password');
+  fireEvent.input(passwordInput, {
+    target: {
+      value: password
+    }
+  });
+
+  const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
+
+  fireEvent.click(submitButton);
+}
+
 describe('Login View', () => {
   test('should enable submit button if form is valid', () => {
     const {
@@ -43,20 +63,6 @@ describe('Login View', () => {
       validationStub
     } = makeSut();
     validationStub.errorMessage = null;
-
-    const emailInput = sut.getByTestId('email');
-    fireEvent.input(emailInput, {
-      target: {
-        value: faker.internet.email()
-      }
-    });
-
-    const passwordInput = sut.getByTestId('password');
-    fireEvent.input(passwordInput, {
-      target: {
-        value: faker.internet.password()
-      }
-    });
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
     expect(submitButton.disabled).toBe(false);
@@ -68,23 +74,9 @@ describe('Login View', () => {
     } = makeSut();
     validationStub.errorMessage = null;
 
-    const emailInput = sut.getByTestId('email');
-    fireEvent.input(emailInput, {
-      target: {
-        value: faker.internet.email()
-      }
-    });
-
-    const passwordInput = sut.getByTestId('password');
-    fireEvent.input(passwordInput, {
-      target: {
-        value: faker.internet.password()
-      }
-    });
+    simulateValidSubmit(sut);
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
-
-    fireEvent.click(submitButton);
     expect(submitButton.disabled).toBe(true);
   });
 
@@ -97,23 +89,8 @@ describe('Login View', () => {
     const email = faker.internet.email();
     const password = faker.internet.password();
 
-    const emailInput = sut.getByTestId('email');
-    fireEvent.input(emailInput, {
-      target: {
-        value: email
-      }
-    });
+    simulateValidSubmit(sut, email, password);
 
-    const passwordInput = sut.getByTestId('password');
-    fireEvent.input(passwordInput, {
-      target: {
-        value: password
-      }
-    });
-
-    const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
-
-    fireEvent.click(submitButton);
     expect(authenticationSpy.params).toEqual({
       email,
       password

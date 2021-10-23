@@ -5,51 +5,84 @@ import {
   Input,
   FormStatus
 } from '@/presentation/components';
-import { useState } from 'react';
+import { FocusEvent, useEffect, useState } from 'react';
+import { Validation } from '@/presentation/protocols/validation';
 
 type StateProps = {
   isLoading?: boolean;
+  email: string;
+  password: string;
   errorMessage?: string;
   emailError: string;
   passwordError: string;
 };
 
-const Login: React.FC = () => {
-  const [state] = useState<StateProps>({
+type Props = {
+  validation: Validation;
+}
+
+const Login: React.FC<Props> = ({ validation }: Props) => {
+  const [state, setState] = useState<StateProps>({
     isLoading: false,
+    email: '',
+    password: '',
     errorMessage: '',
     emailError: 'Campo obrigatório',
     passwordError: 'Campo obrigatório'
-  })
+  });
+
+  useEffect(() => {
+    validation.validate({
+      email: state.email,
+    })
+  }, [state.email])
+
+  useEffect(() => {
+    validation.validate({
+      password: state.password
+    });
+  }, [state.password]);
+
+  const handleInputChange = (e: FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setState({
+      ...state,
+      [name]: value
+    });
+  }
 
   return (
     <div className={Styles.login}>
       <LoginHeader />
-        <form>
-          <h2>Login</h2>
+      <form>
+        <h2>Login</h2>
 
-          <Input
-            type="email"
-            name="email"
-            placeholder="Digite seu email"
-            errorMessage={state.emailError}
-          />
-          <Input
-            type="password"
-            name="password"
-            placeholder="Digite sua senha"
-            errorMessage={state.passwordError}
-          />
-          <button type="submit" data-testid="submit" disabled>
-            Entrar
-          </button>
+        <Input
+          type="email"
+          name="email"
+          placeholder="Digite seu email"
+          onChange={handleInputChange}
+          errorMessage={state.emailError}
+          data-testid="email"
+        />
+        <Input
+          type="password"
+          name="password"
+          placeholder="Digite sua senha"
+          onChange={handleInputChange}
+          errorMessage={state.passwordError}
+          data-testid="password"
+        />
+        <button type="submit" data-testid="submit" disabled>
+          Entrar
+        </button>
 
-          <span className={Styles.link}>Criar conta</span>
-          <FormStatus isLoading={state.isLoading} />
-        </form>
+        <span className={Styles.link}>Criar conta</span>
+        <FormStatus isLoading={state.isLoading} />
+      </form>
       <Footer />
     </div>
   );
-}
+};
 
 export default Login

@@ -1,32 +1,26 @@
 import '@/presentation/styles/colors.scss'
-import Spinner from '@/presentation/components/spinner/spinner';
 import Styles from './login-styles.scss'
+import LoginHeader from '@/presentation/components/login-header/login-header';
+import Footer from '@/presentation/components/footer/footer';
+import Input from '@/presentation/components/input/input';
+import FormStatus from '@/presentation/components/form-status/form-status';
 
 
 const Login: React.FC = () => {
   return (
     <div className={Styles.login}>
-      <header>
-        <img src="./images/logo.svg" alt="logo" />
-        <h1>4Dev - Enquetes para Programadores</h1>
-      </header>
+      <LoginHeader />
       <form>
         <h2>Login</h2>
-        <div className={Styles.inputWrap}>
-          <input type="email" name="email" placeholder="Digite seu email" />
-          <span>🔴</span>
-        </div>
-        <div className={Styles.inputWrap}>
-          <input type="password" name="password" placeholder="Digite sua senha"/>
-          <span>🔴</span>
-        </div>
+        
+        <Input type="email" name="email" placeholder="Digite seu email" />
+        <Input type="password" name="password" placeholder="Digite sua senha" />
         <button type="submit">Entrar</button>
+        
         <span className={Styles.link}>Criar conta</span>
-        <div className={Styles.errorWrap}>
-          <Spinner />
-        </div>
+        <FormStatus />
       </form>
-      <footer />
+      <Footer />
     </div>
   );
 }

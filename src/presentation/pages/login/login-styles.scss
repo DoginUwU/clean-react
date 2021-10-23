@@ -56,20 +56,6 @@ button {
     min-height: 100vh;
     gap: 10px;
 
-    header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border-top: 40px solid $primaryDark;
-        background-color: $primary;
-        gap: 16px;
-        padding: 40px 0px;
-
-        h1 {
-            color: $white;
-        }
-    }
-
     form {
         display: flex;
         flex-direction: column;
@@ -89,24 +75,6 @@ button {
             text-transform: uppercase;
         }
 
-        .inputWrap {
-            display: flex;
-            flex-direction: row;
-            position: relative;
-            align-items: center;
-
-            input {
-                flex-grow: 1;
-            }
-
-            span {
-                position: absolute;
-                right: 8px;
-                opacity: 0.8;
-                cursor: help;
-            }
-        }
-
         .link {
             text-align: center;
             color: $primary;
@@ -118,17 +86,5 @@ button {
                 text-decoration: underline;
             }
         }
-
-        .errorWrap {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
-    }
-
-    footer {
-        background-color: $primary;
-        height: 48px;
     }
 }

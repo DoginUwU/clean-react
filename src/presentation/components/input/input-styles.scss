@@ -1,0 +1,17 @@
+.inputWrap {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    align-items: center;
+
+    input {
+        flex-grow: 1;
+    }
+
+    span {
+        position: absolute;
+        right: 8px;
+        opacity: 0.8;
+        cursor: help;
+    }
+}

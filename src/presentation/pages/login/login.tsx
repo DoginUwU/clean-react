@@ -5,28 +5,48 @@ import {
   Input,
   FormStatus
 } from '@/presentation/components';
-import Context from '@/presentation/contexts/form/form-context';
+import { useState } from 'react';
+
+type StateProps = {
+  isLoading?: boolean;
+  errorMessage?: string;
+  emailError: string;
+  passwordError: string;
+};
 
 const Login: React.FC = () => {
+  const [state] = useState<StateProps>({
+    isLoading: false,
+    errorMessage: '',
+    emailError: 'Campo obrigatório',
+    passwordError: 'Campo obrigatório'
+  })
+
   return (
     <div className={Styles.login}>
       <LoginHeader />
-      <Context.Provider value={{}}>
         <form>
           <h2>Login</h2>
 
-          <Input type="email" name="email" placeholder="Digite seu email" />
+          <Input
+            type="email"
+            name="email"
+            placeholder="Digite seu email"
+            errorMessage={state.emailError}
+          />
           <Input
             type="password"
             name="password"
             placeholder="Digite sua senha"
+            errorMessage={state.passwordError}
           />
-          <button type="submit" data-testid="submit" disabled>Entrar</button>
+          <button type="submit" data-testid="submit" disabled>
+            Entrar
+          </button>
 
           <span className={Styles.link}>Criar conta</span>
-          <FormStatus />
+          <FormStatus isLoading={state.isLoading} />
         </form>
-      </Context.Provider>
       <Footer />
     </div>
   );

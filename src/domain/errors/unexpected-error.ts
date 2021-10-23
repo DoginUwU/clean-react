@@ -1,6 +1,6 @@
 class UnexpectedError extends Error {
   constructor () {
-    super('Unexpected error')
+    super('Erro interno')
     this.name = 'UnexpectedError'
   }
 }

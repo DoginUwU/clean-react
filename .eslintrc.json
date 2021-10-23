@@ -8,7 +8,7 @@
         "standard-with-typescript",
         "plugin:react/recommended"
     ],
-    "plugins": ["react"],
+    "plugins": ["react", "prettier", "@typescript-eslint"],
     "parserOptions": {
         "project": ["./tsconfig.json"]
     },
@@ -16,6 +16,7 @@
         "@typescript-eslint/consistent-type-definitions": "off",
         "@typescript-eslint/strict-boolean-expressions": "off",
         "react/jsx-uses-react": "error",
-        "react/jsx-uses-vars": "error"
+        "react/jsx-uses-vars": "error",
+        "react/react-in-jsx-scope": "off"
     }
 }

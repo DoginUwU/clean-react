@@ -39,19 +39,21 @@ module.exports = {
           }
         ]
       }
-    ]
+    ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    publicPath: '/public/',
-    writeToDisk: true,
+    static: {
+      directory: path.join(__dirname, 'public')
+    },
+    devMiddleware: {
+      publicPath: '/public/',
+      writeToDisk: true
+    },
     historyApiFallback: true
   },
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM'
   },
-  plugins: [
-    new CleanWebpackPlugin()
-  ]
+  plugins: [new CleanWebpackPlugin()]
 }

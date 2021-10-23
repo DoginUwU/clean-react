@@ -7,9 +7,11 @@ import {
   cleanup,
   fireEvent,
   render,
-  RenderResult
+  RenderResult,
+  waitFor
 } from '@testing-library/react'
 import Login from './login'
+import { InvalidCredentialsError } from '@/domain/errors';
 
 type SutTypes = {
   sut: RenderResult;
@@ -60,7 +62,7 @@ const simulateValidSubmit = (sut: RenderResult, email = faker.internet.email(), 
 describe('Login View', () => {
   afterEach(cleanup)
 
-  test('should enable submit button if form is valid', () => {
+  test('should enable submit button if form is valid', async () => {
     const {
       sut,
       validationStub
@@ -68,9 +70,11 @@ describe('Login View', () => {
     validationStub.errorMessage = null;
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
-    expect(submitButton.disabled).toBe(false);
+    await waitFor(() => {
+      expect(submitButton.disabled).toBe(false);
+    })
   });
-  test('should disable submit button on submit', () => {
+  test('should disable submit button on submit', async () => {
     const {
       sut,
       validationStub
@@ -78,11 +82,13 @@ describe('Login View', () => {
     validationStub.errorMessage = null;
 
     simulateValidSubmit(sut);
-
+    
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
-    expect(submitButton.disabled).toBe(true);
+    await waitFor(() => {
+      expect(submitButton.disabled).toBe(true);
+    })
   });
-  test('should call Authentication with correct values', () => {
+  test('should call Authentication with correct values', async () => {
     const {
       sut,
       authenticationSpy
@@ -93,26 +99,45 @@ describe('Login View', () => {
 
     simulateValidSubmit(sut, email, password);
 
-    expect(authenticationSpy.params).toEqual({
-      email,
-      password
-    });
+    await waitFor(() => {
+      expect(authenticationSpy.params).toEqual({
+        email,
+        password
+      });
+    })
   });
-  test('should call Authentication only once', () => {
+  test('should call Authentication only once', async () => {
     const { sut, authenticationSpy } = makeSut();
 
     simulateValidSubmit(sut);
     simulateValidSubmit(sut);
 
-    expect(authenticationSpy.callsCount).toEqual(1);
+    await waitFor(() => {
+      expect(authenticationSpy.callsCount).toEqual(1);
+    })
   });
 
-  test('should not call Authentication if form is invalid', () => {
+  test('should not call Authentication if form is invalid', async () => {
     const { sut, authenticationSpy, validationStub } = makeSut();
     validationStub.errorMessage = faker.random.words();
 
     simulateValidSubmit(sut, '');
 
-    expect(authenticationSpy.callsCount).toEqual(0);
+    await waitFor(() => {
+      expect(authenticationSpy.callsCount).toEqual(0);
+    })
+  });
+
+  test('should present error if Authentication fails', async () => {
+    const { sut, authenticationSpy } = makeSut();
+    jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(new InvalidCredentialsError()))
+
+    await waitFor(() => {
+      simulateValidSubmit(sut);
+    })
+
+    await waitFor(() => {
+      expect(authenticationSpy.callsCount).toEqual(0);
+    })
   });
 });

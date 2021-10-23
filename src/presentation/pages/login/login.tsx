@@ -8,12 +8,12 @@ import {
 import { FocusEvent, FormEvent, useEffect, useState } from 'react';
 import { Validation } from '@/presentation/protocols/validation';
 import { Authentication } from '@/domain/usecases';
+import toast from 'react-hot-toast';
 
 type StateProps = {
   isLoading?: boolean;
   email: string;
   password: string;
-  errorMessage?: string;
   emailError: string;
   passwordError: string;
 };
@@ -28,7 +28,6 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     isLoading: false,
     email: '',
     password: '',
-    errorMessage: '',
     emailError: '',
     passwordError: ''
   });
@@ -60,13 +59,20 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     
     setState({
       ...state,
-      isLoading: true,
-      errorMessage: ''
+      isLoading: true
     });
 
-    await authentication.auth({
+    authentication.auth({
       email: state.email,
       password: state.password
+    }).then(() => {
+    }).catch(error => {
+      toast.error(error.message);
+    }).finally(() => { 
+      setState({
+        ...state,
+        isLoading: false
+      });
     });
   };
 

@@ -54,6 +54,10 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (handleSubmitDisabled)
+      return
+    
     setState({
       ...state,
       isLoading: true,
@@ -69,7 +73,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
   return (
     <div className={Styles.login}>
       <LoginHeader />
-      <form onSubmit={handleSubmit}>
+      <form data-testid="form" onSubmit={handleSubmit}>
         <h2>Login</h2>
 
         <Input

@@ -4,6 +4,7 @@ import {
   AuthenticationSpy
 } from '@/presentation/test';
 import {
+  cleanup,
   fireEvent,
   render,
   RenderResult
@@ -57,6 +58,8 @@ const simulateValidSubmit = (sut: RenderResult, email = faker.internet.email(), 
 }
 
 describe('Login View', () => {
+  afterEach(cleanup)
+
   test('should enable submit button if form is valid', () => {
     const {
       sut,
@@ -79,7 +82,6 @@ describe('Login View', () => {
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement;
     expect(submitButton.disabled).toBe(true);
   });
-
   test('should call Authentication with correct values', () => {
     const {
       sut,
@@ -95,5 +97,22 @@ describe('Login View', () => {
       email,
       password
     });
+  });
+  test('should call Authentication only once', () => {
+    const { sut, authenticationSpy } = makeSut();
+
+    simulateValidSubmit(sut);
+    simulateValidSubmit(sut);
+
+    expect(authenticationSpy.callsCount).toEqual(1);
+  });
+
+  test('should not call Authentication if form is invalid', () => {
+    const { sut, authenticationSpy, validationStub } = makeSut();
+    validationStub.errorMessage = faker.random.words();
+
+    simulateValidSubmit(sut, '');
+
+    expect(authenticationSpy.callsCount).toEqual(0);
   });
 });

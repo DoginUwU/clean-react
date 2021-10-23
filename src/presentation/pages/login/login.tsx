@@ -7,6 +7,7 @@ import {
 } from '@/presentation/components';
 import { FocusEvent, FormEvent, useEffect, useState } from 'react';
 import { Validation } from '@/presentation/protocols/validation';
+import { Authentication } from '@/domain/usecases';
 
 type StateProps = {
   isLoading?: boolean;
@@ -19,9 +20,10 @@ type StateProps = {
 
 type Props = {
   validation: Validation;
-}
+  authentication: Authentication;
+};
 
-const Login: React.FC<Props> = ({ validation }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
   const [state, setState] = useState<StateProps>({
     isLoading: false,
     email: '',
@@ -45,19 +47,24 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
       ...state,
       [name]: value
     });
-  }
+  };
 
   const handleSubmitDisabled =
     state.isLoading || !!state.emailError || !!state.passwordError;
-  
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setState({
       ...state,
       isLoading: true,
       errorMessage: ''
     });
-  }
+
+    await authentication.auth({
+      email: state.email,
+      password: state.password
+    });
+  };
 
   return (
     <div className={Styles.login}>

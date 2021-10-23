@@ -5,7 +5,7 @@ import {
   Input,
   FormStatus
 } from '@/presentation/components';
-import { FocusEvent, useEffect, useState } from 'react';
+import { FocusEvent, FormEvent, useEffect, useState } from 'react';
 import { Validation } from '@/presentation/protocols/validation';
 
 type StateProps = {
@@ -27,15 +27,17 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
     email: '',
     password: '',
     errorMessage: '',
-    emailError: 'Campo obrigatório',
-    passwordError: 'Campo obrigatório'
+    emailError: '',
+    passwordError: ''
   });
 
   useEffect(() => {
-    validation.validate('email', state.email)}, [state.email])
-
-  useEffect(() => {
-    validation.validate('password', state.password)}, [state.password]);
+    setState({
+      ...state,
+      emailError: validation.validate('email', state.email),
+      passwordError: validation.validate('password', state.password)
+    });
+  }, [state.email, state.password]);
 
   const handleInputChange = (e: FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -45,10 +47,22 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
     });
   }
 
+  const handleSubmitDisabled =
+    state.isLoading || !!state.emailError || !!state.passwordError;
+  
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setState({
+      ...state,
+      isLoading: true,
+      errorMessage: ''
+    });
+  }
+
   return (
     <div className={Styles.login}>
       <LoginHeader />
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2>Login</h2>
 
         <Input
@@ -67,7 +81,11 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
           errorMessage={state.passwordError}
           data-testid="password"
         />
-        <button type="submit" data-testid="submit" disabled>
+        <button
+          type="submit"
+          data-testid="submit"
+          disabled={handleSubmitDisabled}
+        >
           Entrar
         </button>
 

@@ -10,7 +10,7 @@ const Input: React.FC<Props> = ({ errorMessage, ...props }: Props) => {
     (event.target.readOnly = false);
 
   const handleStatus = (): string => {
-    return '🔴';
+    return errorMessage ? '🔴' : '🟢';
   };
 
   return (
